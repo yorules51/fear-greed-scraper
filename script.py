@@ -18,7 +18,7 @@ def send_line_message(message):
 
 
 def main():
-    index_value = get_fear_greed_index()
+    """index_value = get_fear_greed_index()"""
     message = f"📊 CNN Fear & Greed Index Today: {index_value} : Link: https://edition.cnn.com/markets/fear-and-greed"
     send_line_message(message)
 
