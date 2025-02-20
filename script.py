@@ -1,6 +1,8 @@
-import requests
-from bs4 import BeautifulSoup
-import json
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 
 # LINE Notify Token (Replace with your token)
 LINE_NOTIFY_TOKEN = "3oNaBEXphV61pG4d7VRcvWv7eqcGlQyva83gVgIv9YC"
@@ -10,28 +12,33 @@ URL = "https://edition.cnn.com/markets/fear-and-greed"
 
 
 def get_fear_greed_index():
-    """Scrapes CNN's Fear & Greed Index"""
-
-    response = requests.get(URL)
-    if response.status_code != 200:
-        return "Error fetching data"
-
-    soup = BeautifulSoup(response.text, "html.parser")
-
-    # Find the index value in the page (adjust selector as needed)
-    #index_value = soup.find("div", class_="market-fng-gauge__dial-number").text.strip()
-
-   # return index_value
-
-    index_element = soup.find("div", class_="market-fng-gauge__dial-number")
-
-    if index_element:
-        index_value = index_element.text.strip()
+        # Setup Chrome options (headless mode)
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")  # Run without opening a browser
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--no-sandbox")
+    
+    # Initialize WebDriver
+    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service, options=chrome_options)
+    
+    # Open CNN Fear & Greed Index page
+    URL = "https://edition.cnn.com/markets/fear-and-greed"
+    driver.get(URL)
+    
+    # Wait for the index value to load (adjust if necessary)
+    driver.implicitly_wait(10)
+    
+    # Find the Fear & Greed Index value
+    try:
+        index_value = driver.find_element(By.CLASS_NAME, "market-fng-gauge__dial-number").text
         print("Fear & Greed Index:", index_value)
-    else:
-        print("Index value not found")
-
-    return index_value
+        return index_value
+    except:
+        print("Index value not found.")
+    
+    # Close the browser session
+    driver.quit()
 
 def send_line_message(message):
     """Sends a message via LINE Notify"""
