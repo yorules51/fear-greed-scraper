@@ -11,6 +11,7 @@ URL = "https://edition.cnn.com/markets/fear-and-greed"
 
 def get_fear_greed_index():
     """Scrapes CNN's Fear & Greed Index"""
+
     response = requests.get(URL)
     if response.status_code != 200:
         return "Error fetching data"
@@ -18,10 +19,19 @@ def get_fear_greed_index():
     soup = BeautifulSoup(response.text, "html.parser")
 
     # Find the index value in the page (adjust selector as needed)
-    index_value = soup.find("div", class_="market-fng-gauge__dial-number").text.strip()
+    #index_value = soup.find("div", class_="market-fng-gauge__dial-number").text.strip()
+
+   # return index_value
+
+    index_element = soup.find("div", class_="market-fng-gauge__dial-number")
+
+    if index_element:
+        index_value = index_element.text.strip()
+        print("Fear & Greed Index:", index_value)
+    else:
+        print("Index value not found")
 
     return index_value
-
 
 def send_line_message(message):
     """Sends a message via LINE Notify"""
