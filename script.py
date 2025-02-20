@@ -7,7 +7,7 @@ URL = "https://edition.cnn.com/markets/fear-and-greed"
 
 
 def get_fear_greed_index():
-
+    return(48)
 
 def send_line_message(message):
     """Sends a message via LINE Notify"""
