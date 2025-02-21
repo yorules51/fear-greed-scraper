@@ -12,7 +12,9 @@ BASE_URL = "https://production.dataviz.cnn.io/index/fearandgreed/graphdata/"
 def get_fear_greed_index():
     ua = UserAgent()
 
-    headers = {'User-Agent': ua.random,}
+    headers = {
+        'User-Agent': ua.random,
+        }
 
     r = requests.get(BASE_URL, headers = headers)
     data = r.json()
