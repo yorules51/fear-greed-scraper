@@ -1,14 +1,22 @@
+from fake_useragent import UserAgent
+import json
 
 # LINE Notify Token (Replace with your token)
 LINE_NOTIFY_TOKEN = "3oNaBEXphV61pG4d7VRcvWv7eqcGlQyva83gVgIv9YC"
 
 # CNN Fear & Greed Index URL
-URL = "https://edition.cnn.com/markets/fear-and-greed"
 
+BASE_URL = "https://production.dataviz.cnn.io/index/fearandgreed/graphdata/"
 
 def get_fear_greed_index():
-    return(48)
+    ua = UserAgent()
 
+    headers = {'User-Agent': ua.random,}
+
+    r = requests.get(BASE_URL, headers = headers)
+    data = r.json()
+    return(round(data['fear_and_greed']['score']))
+    
 def send_line_message(message):
     """Sends a message via LINE Notify"""
     url = "https://notify-api.line.me/api/notify"
