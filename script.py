@@ -1,4 +1,5 @@
 from fake_useragent import UserAgent
+import requests
 import json
 
 # LINE Notify Token (Replace with your token)
