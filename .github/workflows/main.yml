@@ -2,7 +2,7 @@ name: Daily Fear & Greed Scraper
 
 on:
   schedule:
-    - cron: '00,25,40 14 * * 1-5 *'  # Runs every 20min 10:30 on weekday Taiwan Time
+    - cron: '00,25,40 14 * * 1-5'  # Runs every 20min 10:30 on weekday Taiwan Time
   workflow_dispatch:  # Allows manual execution
 
 jobs:
