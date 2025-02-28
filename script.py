@@ -1,9 +1,12 @@
 from fake_useragent import UserAgent
 import requests
 import json
+import os
+from dotenv import load_dotenv
 
 # LINE Notify Token (Replace with your token)
-LINE_NOTIFY_TOKEN = "3oNaBEXphV61pG4d7VRcvWv7eqcGlQyva83gVgIv9YC"
+load_dotenv()
+LINE_NOTIFY_TOKEN = os.getenv('TELEGRAM_TOKEN')
 
 # CNN Fear & Greed Index URL
 
