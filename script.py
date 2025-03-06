@@ -56,7 +56,7 @@ def main():
     """Main function to fetch the Fear & Greed Index and send a Telegram message."""
     index_value = get_fear_greed_index()
     if index_value is not None and index_value <= 25:
-        message = f"📊 CNN Fear & Greed Index: {index_value}\n🔗 Link: https://edition.cnn.com/markets/fear-and-greed"
+        message = f"📊 CNN Fear & Greed Index: {index_value}\n"
         send_telegram_message(message)
     else:
         logging.info(f"Fear & Greed Index is {index_value}. No message sent.")
