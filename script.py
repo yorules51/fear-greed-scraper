@@ -10,6 +10,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 # Load environment variables
 TELEGRAM_API_TOKEN = os.getenv("TELEGRAM_API_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+LINE_NOTIFY_TOKEN = os.getenv("LINE_NOTIFY_TOKEN")
 BASE_URL = "https://production.dataviz.cnn.io/index/fearandgreed/graphdata/"
 
 # Validate environment variables
@@ -52,12 +53,20 @@ def send_telegram_message(message):
         logging.error(f"Error sending Telegram message: {e}")
         logging.error(f"Response: {response.text}")  # Log the API response for debugging
 
+def send_line_message(message):
+    """Sends a message via LINE Notify"""
+    url = "https://notify-api.line.me/api/notify"
+    headers = {"Authorization": f"Bearer {LINE_NOTIFY_TOKEN}"}
+    data = {"message": message}
+    requests.post(url, headers=headers, data=data)
+
 def main():
     """Main function to fetch the Fear & Greed Index and send a Telegram message."""
     index_value = get_fear_greed_index()
     if index_value is not None and index_value <= 25:
         message = f"📊 CNN Fear & Greed Index: {index_value}\n"
         send_telegram_message(message)
+        send_line_message(message)
     else:
         logging.info(f"Fear & Greed Index is {index_value}. No message sent.")
 
