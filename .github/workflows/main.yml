@@ -3,7 +3,7 @@ name: Daily Fear & Greed Scraper
 on:
   schedule:
     # Runs at 10:30 AM, 10:50 AM, and 11:10 AM Taiwan Time (UTC+8) on weekdays (Monday to Friday)
-    - cron: '00,30,50 13-19 * * 1-5'  # UTC time (2:30, 2:50, 3:10 UTC = 10:30, 10:50, 11:10 UTC+8)
+    - cron: '00,30,50 13-21 * * 1-5'  # UTC time (2:30, 2:50, 3:10 UTC = 10:30, 10:50, 11:10 UTC+8)
   workflow_dispatch:  # Allows manual execution from the GitHub Actions UI
 
 jobs:
