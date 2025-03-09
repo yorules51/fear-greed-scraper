@@ -3,6 +3,7 @@ import logging
 from fake_useragent import UserAgent
 import requests
 import json
+import time
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -17,6 +18,9 @@ BASE_URL = "https://production.dataviz.cnn.io/index/fearandgreed/graphdata/"
 if not TELEGRAM_API_TOKEN or not TELEGRAM_CHAT_ID:
     logging.error("Telegram API token or chat ID not found in environment variables.")
     exit(1)
+
+# Global variable to store the previous index value
+previous_index = None
 
 def get_fear_greed_index():
     """Fetches the CNN Fear & Greed Index."""
@@ -62,13 +66,24 @@ def send_line_message(message):
 
 def main():
     """Main function to fetch the Fear & Greed Index and send a Telegram message."""
+    global previous_index
+
     index_value = get_fear_greed_index()
-    if index_value is not None and index_value <= 25:
+    if index_value is None:
+        logging.error("Failed to fetch Fear & Greed Index.")
+        return
+
+    # Check if the index has changed
+    if index_value != previous_index:
         message = f"📊 CNN Fear & Greed Index: {index_value}\n"
-        send_telegram_message(message)
-        send_line_message(message)
+        if index_value <= 25:
+            send_telegram_message(message)
+            send_line_message(message)
+        previous_index = index_value  # Update the previous index value
     else:
-        logging.info(f"Fear & Greed Index is {index_value}. No message sent.")
+        logging.info(f"Fear & Greed Index is unchanged: {index_value}. No message sent.")
 
 if __name__ == "__main__":
-    main()
+    while True:
+        main()
+        time.sleep(3600)  # Wait for 1 hour before checking again
