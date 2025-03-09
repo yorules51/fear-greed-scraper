@@ -18,6 +18,9 @@ if not TELEGRAM_API_TOKEN or not TELEGRAM_CHAT_ID:
     logging.error("Telegram API token or chat ID not found in environment variables.")
     exit(1)
 
+# File to store the previous index value
+PREVIOUS_INDEX_FILE = "previous_index.txt"
+
 def get_fear_greed_index():
     """Fetches the CNN Fear & Greed Index."""
     ua = UserAgent()
@@ -60,15 +63,38 @@ def send_line_message(message):
     data = {"message": message}
     requests.post(url, headers=headers, data=data)
 
+def read_previous_index():
+    """Reads the previous index value from a file."""
+    try:
+        with open(PREVIOUS_INDEX_FILE, "r") as file:
+            return int(file.read().strip())
+    except (FileNotFoundError, ValueError):
+        return None
+
+def write_previous_index(index):
+    """Writes the current index value to a file."""
+    with open(PREVIOUS_INDEX_FILE, "w") as file:
+        file.write(str(index))
+
 def main():
     """Main function to fetch the Fear & Greed Index and send a Telegram message."""
     index_value = get_fear_greed_index()
-    if index_value is not None and index_value <= 25:
+    if index_value is None:
+        logging.error("Failed to fetch Fear & Greed Index.")
+        return
+
+    previous_index = read_previous_index()
+
+    # Check if the index has changed
+    if index_value != previous_index:
         message = f"📊 CNN Fear & Greed Index: {index_value}\n"
-        send_telegram_message(message)
-        send_line_message(message)
+        if index_value <= 25:
+            send_telegram_message(message)
+            send_line_message(message)
+        write_previous_index(index_value)  # Update the previous index value
+        logging.info(f"Fear & Greed Index has changed to: {index_value}. Message sent.")
     else:
-        logging.info(f"Fear & Greed Index is {index_value}. No message sent.")
+        logging.info(f"Fear & Greed Index is unchanged: {index_value}. No message sent.")
 
 if __name__ == "__main__":
     main()
